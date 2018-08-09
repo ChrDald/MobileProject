@@ -1,0 +1,5 @@
+Search by long/lat and within distance (useful)
+https://www.eventbriteapi.com/v3/events/search/?location.latitude=23.06&location.longitude=72.53&location.within=100km&token=
+
+Expand organizer and venue to get more info like venue address including long and lat
+https://www.eventbriteapi.com/v3/events/search/?location.address=Montreal&expand=organizer,venue&token=

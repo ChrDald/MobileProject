@@ -21,14 +21,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
 
     private GoogleMap map;
     private FusedLocationProviderClient mFusedLocationClient;
 
-    //private static final LatLng SYDNEY = new LatLng(-33.88,151.21);
-    //private static final LatLng MOUNTAIN_VIEW = new LatLng(37.4, -122.1);
-
+    // used for adding multiple markers
+    private MarkerOptions options = new MarkerOptions();
+    private ArrayList<LatLng> latlngs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-    // clicking your location
+    // clicking your location on the map
     @Override
     public void onMyLocationClick(@NonNull Location location) {
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
@@ -75,7 +77,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // TODO: Before enabling the My Location layer, you must request
         // location permission from the user.
-
         if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -92,6 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         map.setOnMyLocationButtonClickListener(this);
         map.setOnMyLocationClickListener(this);
 
+        // center around current user position
         mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -117,8 +119,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        // test code below, hard coding multiple locations
+        latlngs.add(new LatLng(46.5017, -73.5673));
+        latlngs.add(new LatLng(46.0017, -73.5673));
+        latlngs.add(new LatLng(46.5017, -73.5673));
+        latlngs.add(new LatLng(47.0017, -73.5673));
 
-
+        // foreach items in latlngs arraylist add them to the map
+        // options are the marker options
+        for (LatLng point : latlngs) {
+            options.position(point);
+            options.title("someTitle");
+            options.snippet("someDesc");
+            googleMap.addMarker(options);
+        }
 
     }
 }
