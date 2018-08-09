@@ -18,6 +18,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
@@ -91,45 +92,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         map.setOnMyLocationButtonClickListener(this);
         map.setOnMyLocationClickListener(this);
 
-        Task t = mFusedLocationClient.getLastLocation();
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    LatLng userPosition = new LatLng(location.getLatitude(), location.getLongitude());
 
-        if (t.isSuccessful() == true) {
-            Location loc = (Location) t.getResult();
-
-            LatLng userPosition = new LatLng(loc.getLatitude(), loc.getLongitude());
-
-//            // Zoom in, animating the camera.
-//            map.animateCamera(CameraUpdateFactory.zoomIn());
-//            // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-//            map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-//            // Construct a CameraPosition focusing on currrent position and animate the camera to that position.
-//            CameraPosition cameraPosition = new CameraPosition.Builder()
-//                    .target(userPosition)       // Sets the center of the map to Mountain View
-//                    .zoom(17)                   // Sets the zoom
-//                //    .bearing(90)                // Sets the orientation of the camera to east
-//                    .tilt(15)                   // Sets the tilt of the camera to 30 degrees
-//                    .build();                   // Creates a CameraPosition from the builder
-//            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-
-
-        // template code
-//        mMap = googleMap;
-//
-//        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(45.5017, -73.5673);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-
-
-        // simplest(?) way that i found so far to load the map at user position
-        //onMyLocationButtonClick();
-
-        // Move the camera instantly to Sydney with a zoom of 15.
-        //        map.moveCamera(CameraUpdateFactory.newLatLngZoom(SYDNEY, 15));
-
-
+                    // commented code below kept for future reference
+                    // Zoom in, animating the camera.
+                    //map.animateCamera(CameraUpdateFactory.zoomIn());
+                    // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+                    //map.animateCamera(CameraUpdateFactory.zoomTo(100), 2000, null);
+                    // Construct a CameraPosition focusing on current position and
+                    // animate the camera to that position.
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(userPosition)       // Sets the center of the map to Mountain View
+                            .zoom(10)                   // Sets the zoom
+                        //    .bearing(90)                // Sets the orientation of the camera to east
+                         //   .tilt(15)                   // Sets the tilt of the camera to 30 degrees
+                            .build();                   // Creates a CameraPosition from the builder
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+            }
+        });
 
 
 
